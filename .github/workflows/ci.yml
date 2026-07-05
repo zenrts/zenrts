@@ -97,7 +97,7 @@ jobs:
       - name: Generate coverage report
         if: matrix.coverage
         run: |
-          lcov --capture -d build --output-file coverage.info --branch-coverage --ignore-errors unused
+          lcov --capture -d build --output-file coverage.info --branch-coverage --ignore-errors unused,version
           lcov --remove coverage.info -o coverage.info \
             '/usr/*' '*/_deps/*' '*/tests/*' '*/benchmarks/*' '*/googletest/*' '*/googlebenchmark/*' \
             --ignore-errors unused
