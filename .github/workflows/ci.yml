@@ -103,6 +103,44 @@ jobs:
       - name: Test
         run: ctest --test-dir build --output-on-failure --parallel -C Debug
 
+  coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install lcov
+        run: sudo apt-get update && sudo apt-get install -y lcov
+
+      - name: Configure
+        run: >
+          cmake -B build
+          -DCMAKE_BUILD_TYPE=Debug
+          -DZENRTS_BUILD_TESTS=ON
+          -DZENRTS_BUILD_BENCHMARKS=OFF
+          -DZENRTS_STATIC_LINK=OFF
+          -DZENRTS_BUILD_COVERAGE=ON
+
+      - name: Build
+        run: cmake --build build --parallel
+
+      - name: Test
+        run: ctest --test-dir build --output-on-failure --parallel
+
+      - name: Generate coverage report
+        run: |
+          lcov --capture -d build --output-file coverage.info --rc lcov_branch_coverage=1
+          lcov --remove coverage.info -o coverage.info \
+            '/usr/*' '*/_deps/*' '*/tests/*' '*/benchmarks/*' '*/googletest/*' '*/googlebenchmark/*'
+          lcov --list coverage.info
+
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v6
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage.info
+          flags: ubuntu-gcc-debug
+
   release:
     if: startsWith(github.ref, 'refs/tags/v')
     permissions:

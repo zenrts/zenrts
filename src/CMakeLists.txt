@@ -16,6 +16,13 @@ target_compile_options(zenrts_lib PRIVATE
 )
 
 add_executable(zenrts main.cpp)
+
+if(ZENRTS_BUILD_COVERAGE)
+    target_compile_options(zenrts_lib PRIVATE --coverage -g -O0)
+    target_link_options(zenrts_lib PUBLIC --coverage)
+    target_compile_options(zenrts PRIVATE --coverage -g -O0)
+    target_link_options(zenrts PRIVATE --coverage)
+endif()
 target_link_libraries(zenrts PRIVATE zenrts_lib)
 
 if(ZENRTS_STATIC_LINK)
