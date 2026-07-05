@@ -1,0 +1,38 @@
+# Build
+build/
+cmake-build*/
+out/
+_build/
+_builds/
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+CTestTestfile.cmake
+Makefile
+*.cmake
+!cmake/Dependencies.cmake
+!CMakeLists.txt
+
+# Dependencies fetched by CMake
+_deps/
+
+# Compiled
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dylib
+*.dll
+*.exe
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
