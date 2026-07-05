@@ -20,10 +20,12 @@ target_link_libraries(zenrts PRIVATE zenrts_lib)
 
 set_property(TARGET zenrts PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
-target_link_options(zenrts PRIVATE
-    $<$<CXX_COMPILER_ID:GNU>:-static -static-libstdc++ -static-libgcc>
-    $<$<AND:$<CXX_COMPILER_ID:Clang>,$<NOT:$<APPLE>>>:-static -static-libstdc++ -static-libgcc>
-    $<$<AND:$<CXX_COMPILER_ID:Clang>,$<APPLE>>:-static-libstdc++>
-)
+if(ZENRTS_STATIC_LINK)
+    target_link_options(zenrts PRIVATE
+        $<$<CXX_COMPILER_ID:GNU>:-static -static-libstdc++ -static-libgcc>
+        $<$<AND:$<CXX_COMPILER_ID:Clang>,$<NOT:$<PLATFORM_ID:Darwin>>>:-static -static-libstdc++ -static-libgcc>
+        $<$<AND:$<CXX_COMPILER_ID:Clang>,$<PLATFORM_ID:Darwin>>:-static-libstdc++>
+    )
+endif()
 
 install(TARGETS zenrts RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

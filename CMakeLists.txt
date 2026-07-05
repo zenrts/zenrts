@@ -7,6 +7,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 option(ZENRTS_BUILD_TESTS "Build tests" ON)
 option(ZENRTS_BUILD_BENCHMARKS "Build benchmarks" ON)
+option(ZENRTS_STATIC_LINK "Statically link zenrts executable" ON)
 
 include(cmake/Dependencies.cmake)
 
