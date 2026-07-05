@@ -85,36 +85,33 @@ jobs:
         if: runner.os != 'Windows' && !matrix.coverage
         run: ./build/benchmarks/benchmark_zenrts
 
-      - name: Setup gcov tool
+      - name: Install lcov
         if: matrix.coverage
-        id: gcov-setup
         run: |
-          if [ "${{ matrix.compiler }}" = "clang" ]; then
-            if [ "$RUNNER_OS" = "macOS" ]; then
-              TOOL="$(xcrun --find llvm-cov 2>/dev/null || echo "")"
-            else
-              TOOL="$(which llvm-cov 2>/dev/null || which llvm-cov-18 2>/dev/null || which llvm-cov-19 2>/dev/null || echo "")"
-              if [ -z "$TOOL" ]; then
-                sudo apt-get update -qq && sudo apt-get install -y -qq llvm
-                TOOL="$(which llvm-cov 2>/dev/null || echo "llvm-cov")"
-              fi
-            fi
-            echo "#!/bin/sh" > /tmp/gcov-wrapper
-            echo "exec $TOOL gcov \"\$@\"" >> /tmp/gcov-wrapper
-            chmod +x /tmp/gcov-wrapper
-            echo "gcov_exec=/tmp/gcov-wrapper" >> $GITHUB_OUTPUT
+          if [ "$RUNNER_OS" = "macOS" ]; then
+            brew install lcov
           else
-            echo "gcov_exec=$(which gcov)" >> $GITHUB_OUTPUT
+            sudo apt-get update -qq && sudo apt-get install -y -qq lcov
           fi
+
+      - name: Generate coverage report
+        if: matrix.coverage
+        run: |
+          lcov --capture -d build --output-file coverage.info \
+            --branch-coverage \
+            --ignore-errors unused,version,empty
+          lcov --remove coverage.info -o coverage.info \
+            '/usr/*' '*/_deps/*' '*/tests/*' '*/benchmarks/*' \
+            '*/googletest/*' '*/googlebenchmark/*' '*/main.cpp' \
+            --ignore-errors unused,empty
+          lcov --list coverage.info --ignore-errors empty
 
       - name: Upload coverage to Codecov
         if: matrix.coverage
         uses: codecov/codecov-action@v6
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          directory: build
-          gcov_executable: ${{ steps.gcov-setup.outputs.gcov_exec }}
-          gcov_ignore: '*/main.cpp'
+          files: coverage.info
           flags: ${{ matrix.os }}-${{ matrix.compiler }}-${{ matrix.build_type }}
           fail_ci_if_error: false
 
