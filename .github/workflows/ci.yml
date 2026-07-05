@@ -151,11 +151,11 @@ jobs:
       - name: Build
         run: cmake --build build --config Release --parallel
 
-      - name: Install
-        run: cmake --install build --config Release --prefix ${{ runner.temp }}/zenrts-${{ matrix.arch }}
+      - name: Install & strip
+        run: cmake --install build --config Release --prefix ${{ runner.temp }}/zenrts-${{ matrix.arch }} --strip
 
       - name: Package
-        run: tar -C ${{ runner.temp }} -czf ${{ runner.temp }}/zenrts-${{ matrix.arch }}.tar.gz zenrts-${{ matrix.arch }}
+        run: tar -C ${{ runner.temp }}/zenrts-${{ matrix.arch }} -czf ${{ runner.temp }}/zenrts-${{ matrix.arch }}.tar.gz bin/
 
       - name: Upload
         uses: softprops/action-gh-release@v3
