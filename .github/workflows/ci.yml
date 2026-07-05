@@ -11,27 +11,56 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
-        compiler: [gcc, clang]
-        build_type: [Debug, Release]
-        exclude:
-          - os: macos-latest
+        include:
+          - os: ubuntu-latest
+            arch: amd64
             compiler: gcc
+            cc: gcc
+            cxx: g++
+          - os: ubuntu-latest
+            arch: amd64
+            compiler: clang
+            cc: clang
+            cxx: clang++
+          - os: ubuntu-24.04-arm
+            arch: arm64
+            compiler: gcc
+            cc: gcc
+            cxx: g++
+          - os: ubuntu-24.04-arm
+            arch: arm64
+            compiler: clang
+            cc: clang
+            cxx: clang++
+          - os: macos-13
+            arch: amd64
+            compiler: clang
+            cc: clang
+            cxx: clang++
+          - os: macos-latest
+            arch: arm64
+            compiler: clang
+            cc: clang
+            cxx: clang++
+          - os: windows-latest
+            arch: amd64
+            compiler: msvc
+            shell: pwsh
+        build_type: [Debug, Release]
 
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: ${{ matrix.shell || 'bash' }}
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup compiler
+      - name: Setup compiler (Unix)
+        if: runner.os != 'Windows'
         run: |
-          if [ "${{ matrix.compiler }}" = "gcc" ]; then
-            echo "CC=gcc" >> $GITHUB_ENV
-            echo "CXX=g++" >> $GITHUB_ENV
-          else
-            echo "CC=clang" >> $GITHUB_ENV
-            echo "CXX=clang++" >> $GITHUB_ENV
-          fi
+          echo "CC=${{ matrix.cc }}" >> $GITHUB_ENV
+          echo "CXX=${{ matrix.cxx }}" >> $GITHUB_ENV
 
       - name: Configure
         run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DZENRTS_BUILD_TESTS=ON -DZENRTS_BUILD_BENCHMARKS=ON
@@ -40,9 +69,10 @@ jobs:
         run: cmake --build build --parallel
 
       - name: Test
-        run: ctest --test-dir build --output-on-failure
+        run: ctest --test-dir build --output-on-failure --parallel
 
-      - name: Benchmark
+      - name: Benchmark (Unix)
+        if: runner.os != 'Windows'
         run: ./build/benchmarks/benchmark_zenrts
 
   sanitizers:
@@ -86,4 +116,4 @@ jobs:
         run: cmake --build build --parallel
 
       - name: Test
-        run: ctest --test-dir build --output-on-failure
+        run: ctest --test-dir build --output-on-failure --parallel
