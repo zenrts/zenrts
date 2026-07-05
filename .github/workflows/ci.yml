@@ -51,10 +51,10 @@ jobs:
         run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DZENRTS_BUILD_TESTS=ON -DZENRTS_BUILD_BENCHMARKS=ON
 
       - name: Build
-        run: cmake --build build --parallel
+        run: cmake --build build --config ${{ matrix.build_type }} --parallel
 
       - name: Test
-        run: ctest --test-dir build --output-on-failure --parallel
+        run: ctest --test-dir build --output-on-failure -C ${{ matrix.build_type }} --parallel
 
       - name: Benchmark (Unix)
         if: runner.os != 'Windows'
@@ -98,7 +98,7 @@ jobs:
           -DZENRTS_BUILD_BENCHMARKS=OFF
 
       - name: Build
-        run: cmake --build build --parallel
+        run: cmake --build build --parallel --config Debug
 
       - name: Test
-        run: ctest --test-dir build --output-on-failure --parallel
+        run: ctest --test-dir build --output-on-failure --parallel -C Debug
