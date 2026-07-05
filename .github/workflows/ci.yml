@@ -102,7 +102,7 @@ jobs:
             --ignore-errors unused,version,empty
           lcov --remove coverage.info -o coverage.info \
             '/usr/*' '*/_deps/*' '*/tests/*' '*/benchmarks/*' \
-            '*/googletest/*' '*/googlebenchmark/*' '*/main.cpp' \
+            '*/googletest/*' '*/googlebenchmark/*' '*/app/*' \
             --ignore-errors unused,empty
           lcov --list coverage.info --ignore-errors empty
 

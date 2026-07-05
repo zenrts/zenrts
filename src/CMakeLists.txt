@@ -15,7 +15,7 @@ target_compile_options(zenrts_lib PRIVATE
     >
 )
 
-add_executable(zenrts main.cpp)
+add_executable(zenrts app/main.cpp)
 
 if(ZENRTS_BUILD_COVERAGE)
     target_compile_options(zenrts_lib PRIVATE --coverage -g -O0)
