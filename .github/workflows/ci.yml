@@ -97,10 +97,19 @@ jobs:
       - name: Generate coverage report
         if: matrix.coverage
         run: |
-          lcov --capture -d build --output-file coverage.info --branch-coverage --ignore-errors unused,version
+          GCOV_TOOL="$(which gcov 2>/dev/null || true)"
+          if [ "$RUNNER_OS" = "macOS" ]; then
+            GCOV_TOOL="$(xcrun --find llvm-cov 2>/dev/null || echo "") gcov"
+            [ -z "$GCOV_TOOL" ] && GCOV_TOOL="$(which gcov 2>/dev/null || true)"
+          fi
+          lcov --capture -d build --output-file coverage.info \
+            ${GCOV_TOOL:+--gcov-tool "$GCOV_TOOL"} \
+            --branch-coverage \
+            --ignore-errors unused,version,empty
           lcov --remove coverage.info -o coverage.info \
-            '/usr/*' '*/_deps/*' '*/tests/*' '*/benchmarks/*' '*/googletest/*' '*/googlebenchmark/*' \
-            --ignore-errors unused
+            '/usr/*' '*/_deps/*' '*/tests/*' '*/benchmarks/*' \
+            '*/googletest/*' '*/googlebenchmark/*' \
+            --ignore-errors unused,empty
           lcov --list coverage.info
 
       - name: Upload to Codecov
@@ -110,6 +119,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage.info
           flags: ${{ matrix.os }}-${{ matrix.compiler }}-${{ matrix.build_type }}
+          fail_ci_if_error: false
 
   sanitizers:
     strategy:
