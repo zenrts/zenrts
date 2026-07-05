@@ -11,42 +11,27 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - os: ubuntu-latest
-            arch: amd64
-            compiler: gcc
-            cc: gcc
-            cxx: g++
-          - os: ubuntu-latest
-            arch: amd64
-            compiler: clang
-            cc: clang
-            cxx: clang++
-          - os: ubuntu-24.04-arm
-            arch: arm64
-            compiler: gcc
-            cc: gcc
-            cxx: g++
-          - os: ubuntu-24.04-arm
-            arch: arm64
-            compiler: clang
-            cc: clang
-            cxx: clang++
-          - os: macos-13
-            arch: amd64
-            compiler: clang
-            cc: clang
-            cxx: clang++
-          - os: macos-latest
-            arch: arm64
-            compiler: clang
-            cc: clang
-            cxx: clang++
-          - os: windows-latest
-            arch: amd64
-            compiler: msvc
-            shell: pwsh
+        os: [ubuntu-latest, ubuntu-24.04-arm, macos-13, macos-latest, windows-latest]
+        compiler: [gcc, clang]
         build_type: [Debug, Release]
+        exclude:
+          - os: macos-13
+            compiler: gcc
+          - os: macos-latest
+            compiler: gcc
+          - os: windows-latest
+            compiler: gcc
+          - os: windows-latest
+            compiler: clang
+        include:
+          - os: windows-latest
+            compiler: msvc
+            build_type: Debug
+            shell: pwsh
+          - os: windows-latest
+            compiler: msvc
+            build_type: Release
+            shell: pwsh
 
     runs-on: ${{ matrix.os }}
     defaults:
@@ -56,11 +41,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup compiler (Unix)
-        if: runner.os != 'Windows'
+      - name: Setup compiler (GCC/Clang)
+        if: matrix.compiler != 'msvc'
         run: |
-          echo "CC=${{ matrix.cc }}" >> $GITHUB_ENV
-          echo "CXX=${{ matrix.cxx }}" >> $GITHUB_ENV
+          echo "CC=${{ matrix.compiler == 'gcc' && 'gcc' || 'clang' }}" >> $GITHUB_ENV
+          echo "CXX=${{ matrix.compiler == 'gcc' && 'g++' || 'clang++' }}" >> $GITHUB_ENV
 
       - name: Configure
         run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DZENRTS_BUILD_TESTS=ON -DZENRTS_BUILD_BENCHMARKS=ON

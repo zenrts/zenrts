@@ -9,4 +9,8 @@ target_include_directories(zenrts
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
-target_compile_options(zenrts PRIVATE -Wall -Wextra -Wpedantic)
+target_compile_options(zenrts PRIVATE
+    $<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:
+        -Wall -Wextra -Wpedantic
+    >
+)
