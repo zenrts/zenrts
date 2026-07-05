@@ -18,8 +18,6 @@ target_compile_options(zenrts_lib PRIVATE
 add_executable(zenrts main.cpp)
 target_link_libraries(zenrts PRIVATE zenrts_lib)
 
-set_property(TARGET zenrts PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-
 if(ZENRTS_STATIC_LINK)
     target_link_options(zenrts PRIVATE
         $<$<CXX_COMPILER_ID:GNU>:-static -static-libstdc++ -static-libgcc>
