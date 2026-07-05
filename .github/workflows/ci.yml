@@ -239,6 +239,9 @@ with open("checksum.txt", "w") as f:
 print(f"SHA256({lib}) = {h}")
 PYEOF
 
+      - name: Include LICENSE
+        run: cp ${{ github.workspace }}/LICENSE ${{ runner.temp }}/zenrts-${{ matrix.arch }}/
+
       - name: Package
         run: tar -C ${{ runner.temp }}/zenrts-${{ matrix.arch }} -czf ${{ runner.temp }}/zenrts-${{ matrix.arch }}.tar.gz .
 
