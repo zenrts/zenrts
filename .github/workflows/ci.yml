@@ -85,40 +85,14 @@ jobs:
         if: runner.os != 'Windows' && !matrix.coverage
         run: ./build/benchmarks/benchmark_zenrts
 
-      - name: Install lcov
-        if: matrix.coverage
-        run: |
-          if [ "$RUNNER_OS" = "macOS" ]; then
-            brew install lcov
-          else
-            sudo apt-get update && sudo apt-get install -y lcov
-          fi
-
-      - name: Generate coverage report
-        if: matrix.coverage
-        run: |
-          GCOV_TOOL="$(which gcov 2>/dev/null || true)"
-          if [ "$RUNNER_OS" = "macOS" ]; then
-            GCOV_TOOL="$(xcrun --find llvm-cov 2>/dev/null || echo "") gcov"
-            [ -z "$GCOV_TOOL" ] && GCOV_TOOL="$(which gcov 2>/dev/null || true)"
-          fi
-          lcov --capture -d build --output-file coverage.info \
-            ${GCOV_TOOL:+--gcov-tool "$GCOV_TOOL"} \
-            --branch-coverage \
-            --ignore-errors unused,version,empty
-          lcov --remove coverage.info -o coverage.info \
-            '/usr/*' '*/_deps/*' '*/tests/*' '*/benchmarks/*' \
-            '*/googletest/*' '*/googlebenchmark/*' \
-            '*/main.cpp' \
-            --ignore-errors unused,empty
-          lcov --list coverage.info
-
-      - name: Upload to Codecov
+      - name: Upload raw coverage to Codecov
         if: matrix.coverage
         uses: codecov/codecov-action@v6
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: coverage.info
+          directory: build
+          gcov: true
+          gcov_ignore: '*/main.cpp'
           flags: ${{ matrix.os }}-${{ matrix.compiler }}-${{ matrix.build_type }}
           fail_ci_if_error: false
 
