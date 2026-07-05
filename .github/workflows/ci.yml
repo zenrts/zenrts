@@ -39,6 +39,18 @@ jobs:
             compiler: clang
             build_type: Debug
             coverage: true
+          - os: ubuntu-24.04-arm
+            compiler: gcc
+            build_type: Debug
+            coverage: true
+          - os: ubuntu-24.04-arm
+            compiler: clang
+            build_type: Debug
+            coverage: true
+          - os: macos-latest
+            compiler: clang
+            build_type: Debug
+            coverage: true
 
     runs-on: ${{ matrix.os }}
     defaults:
@@ -75,7 +87,12 @@ jobs:
 
       - name: Install lcov
         if: matrix.coverage
-        run: sudo apt-get update && sudo apt-get install -y lcov
+        run: |
+          if [ "$RUNNER_OS" = "macOS" ]; then
+            brew install lcov
+          else
+            sudo apt-get update && sudo apt-get install -y lcov
+          fi
 
       - name: Generate coverage report
         if: matrix.coverage
