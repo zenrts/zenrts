@@ -7,12 +7,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 option(ZENRTS_BUILD_TESTS "Build tests" ON)
 option(ZENRTS_BUILD_BENCHMARKS "Build benchmarks" ON)
-option(ZENRTS_STATIC_LINK "Statically link zenrts executable" ON)
 option(ZENRTS_BUILD_COVERAGE "Build with code coverage" OFF)
-
-if(MSVC AND ZENRTS_STATIC_LINK)
-    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>" CACHE STRING "" FORCE)
-endif()
 
 include(cmake/Dependencies.cmake)
 
@@ -35,4 +30,10 @@ install(
 install(
     DIRECTORY ${PROJECT_SOURCE_DIR}/include/zenrts
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+install(
+    EXPORT zenrts-targets
+    FILE zenrtsConfig.cmake
+    NAMESPACE zenrts::
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/zenrts
 )

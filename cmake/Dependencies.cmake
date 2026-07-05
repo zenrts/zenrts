@@ -12,8 +12,11 @@ FetchContent_Declare(
     GIT_TAG v1.9.1
 )
 
+set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
+set(BENCHMARK_ENABLE_INSTALL OFF CACHE BOOL "" FORCE)
+set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
+
 if(ZENRTS_BUILD_TESTS)
-    set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
     FetchContent_MakeAvailable(googletest googlebenchmark)
 elseif(ZENRTS_BUILD_BENCHMARKS)
     FetchContent_MakeAvailable(googlebenchmark)
