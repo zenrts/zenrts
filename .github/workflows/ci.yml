@@ -9,6 +9,7 @@ on:
 
 jobs:
   build:
+    if: github.ref_type != 'tag'
     strategy:
       fail-fast: false
       matrix:
@@ -115,6 +116,7 @@ jobs:
           fail_ci_if_error: false
 
   sanitizers:
+    if: github.ref_type != 'tag'
     strategy:
       fail-fast: false
       matrix:
@@ -207,6 +209,20 @@ jobs:
 
       - name: Install
         run: cmake --install build --config Release --prefix ${{ runner.temp }}/zenrts-${{ matrix.arch }}
+
+      - name: Generate checksum
+        shell: bash
+        run: |
+          cd ${{ runner.temp }}/zenrts-${{ matrix.arch }}
+          python3 << 'PYEOF'
+import hashlib, glob
+libs = glob.glob("lib/*.a") + glob.glob("lib/*.lib")
+lib = libs[0]
+h = hashlib.sha256(open(lib, "rb").read()).hexdigest()
+with open("checksum.txt", "w") as f:
+    f.write(f"{h}  {lib}\n")
+print(f"SHA256({lib}) = {h}")
+PYEOF
 
       - name: Package
         run: tar -C ${{ runner.temp }}/zenrts-${{ matrix.arch }} -czf ${{ runner.temp }}/zenrts-${{ matrix.arch }}.tar.gz .
