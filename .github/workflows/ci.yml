@@ -11,12 +11,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, ubuntu-24.04-arm, macos-13, macos-latest, windows-latest]
+        os: [ubuntu-latest, ubuntu-24.04-arm, macos-latest, windows-latest]
         compiler: [gcc, clang]
         build_type: [Debug, Release]
         exclude:
-          - os: macos-13
-            compiler: gcc
           - os: macos-latest
             compiler: gcc
           - os: windows-latest
