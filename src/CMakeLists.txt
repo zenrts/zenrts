@@ -1,16 +1,29 @@
-add_library(zenrts
+add_library(zenrts_lib STATIC
     core.cpp
     utils.cpp
 )
 
-target_include_directories(zenrts
+target_include_directories(zenrts_lib
     PUBLIC
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
-target_compile_options(zenrts PRIVATE
+target_compile_options(zenrts_lib PRIVATE
     $<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:
         -Wall -Wextra -Wpedantic
     >
 )
+
+add_executable(zenrts main.cpp)
+target_link_libraries(zenrts PRIVATE zenrts_lib)
+
+set_property(TARGET zenrts PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
+target_link_options(zenrts PRIVATE
+    $<$<CXX_COMPILER_ID:GNU>:-static -static-libstdc++ -static-libgcc>
+    $<$<AND:$<CXX_COMPILER_ID:Clang>,$<NOT:$<APPLE>>>:-static -static-libstdc++ -static-libgcc>
+    $<$<AND:$<CXX_COMPILER_ID:Clang>,$<APPLE>>:-static-libstdc++>
+)
+
+install(TARGETS zenrts RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

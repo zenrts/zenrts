@@ -3,6 +3,6 @@ add_executable(test_zenrts
     test_utils.cpp
 )
 
-target_link_libraries(test_zenrts PRIVATE zenrts gtest_main)
+target_link_libraries(test_zenrts PRIVATE zenrts_lib gtest_main)
 
 add_test(NAME test_zenrts COMMAND test_zenrts)

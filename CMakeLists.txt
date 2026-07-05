@@ -30,14 +30,3 @@ install(
     DIRECTORY ${PROJECT_SOURCE_DIR}/include/zenrts
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
-install(
-    TARGETS zenrts
-    EXPORT zenrts-targets
-    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-)
-install(
-    EXPORT zenrts-targets
-    FILE zenrtsConfig.cmake
-    NAMESPACE zenrts::
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/zenrts
-)
