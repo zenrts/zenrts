@@ -15,6 +15,7 @@
 
 add_executable(test_zenrts
     test_core.cpp
+    test_time.cpp
     test_utils.cpp
 )
 

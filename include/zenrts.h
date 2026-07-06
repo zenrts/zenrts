@@ -17,6 +17,7 @@
 #define ZENRTS_ZENRTS_H
 
 #include <zenrts/core.h>
+#include <zenrts/time.h>
 #include <zenrts/utils.h>
 
 #endif
