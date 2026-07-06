@@ -51,3 +51,12 @@ _deps/
 *~
 .DS_Store
 Thumbs.db
+
+# Coverage (gcov / lcov)
+*.gcda
+*.gcno
+*.gcov
+coverage.info
+coverage.info.*
+coverage_report/
+*.gcov

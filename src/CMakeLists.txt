@@ -14,6 +14,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 add_library(zenrts STATIC
+    context.cpp
     core.cpp
     utils.cpp
 )

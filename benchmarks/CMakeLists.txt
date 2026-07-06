@@ -14,10 +14,12 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 add_executable(benchmark_zenrts
+    benchmark_context.cpp
     benchmark_core.cpp
+    benchmark_strand.cpp
 )
 
-target_link_libraries(benchmark_zenrts PRIVATE zenrts benchmark::benchmark)
+target_link_libraries(benchmark_zenrts PRIVATE zenrts benchmark::benchmark benchmark::benchmark_main)
 
 if(ZENRTS_BUILD_COVERAGE)
     target_compile_options(benchmark_zenrts PRIVATE --coverage -g -O0)
