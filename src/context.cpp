@@ -32,7 +32,7 @@ struct Context::Impl {
     DeadlineTimer* timer_head_ = nullptr;
 
     int work_count_ = 0;
-    bool stopped_ = false;
+    std::atomic<bool> stopped_{false};
     mutable std::mutex mtx_;
     std::condition_variable cv_;
 
@@ -185,28 +185,28 @@ void Context::post(TaskBase& task, Priority prio)
 void Context::run()
 {
     for (;;) {
-        if (impl_->stopped_) break;
+        if (impl_->stopped_.load(std::memory_order_acquire)) break;
 
         {
             std::unique_lock lock(impl_->mtx_);
             impl_->fire_expired_timers();
         }
 
-        if (impl_->stopped_) break;
+        if (impl_->stopped_.load(std::memory_order_acquire)) break;
 
         auto* tasks = impl_->drain_all();
-        while (tasks && !impl_->stopped_) {
+        while (tasks && !impl_->stopped_.load(std::memory_order_acquire)) {
             auto* task = tasks;
             tasks = task->next.load(std::memory_order_relaxed);
             task->next.store(nullptr, std::memory_order_relaxed);
             task->execute();
         }
 
-        if (impl_->stopped_) break;
+        if (impl_->stopped_.load(std::memory_order_acquire)) break;
 
         {
             std::unique_lock lock(impl_->mtx_);
-            if (impl_->stopped_) break;
+            if (impl_->stopped_.load(std::memory_order_acquire)) break;
 
             if (impl_->has_work()) continue;
 
@@ -224,17 +224,16 @@ void Context::run()
 
 void Context::stop()
 {
+    impl_->stopped_.store(true, std::memory_order_release);
     {
         std::lock_guard lock(impl_->mtx_);
-        impl_->stopped_ = true;
         impl_->cv_.notify_all();
     }
 }
 
 bool Context::stopped() const
 {
-    std::lock_guard lock(impl_->mtx_);
-    return impl_->stopped_;
+    return impl_->stopped_.load(std::memory_order_acquire);
 }
 
 void Context::wake()
