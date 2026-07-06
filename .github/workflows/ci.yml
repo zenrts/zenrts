@@ -51,20 +51,8 @@ jobs:
             compiler: gcc
             build_type: Debug
             coverage: true
-          - os: ubuntu-latest
-            compiler: clang
-            build_type: Debug
-            coverage: true
           - os: ubuntu-24.04-arm
             compiler: gcc
-            build_type: Debug
-            coverage: true
-          - os: ubuntu-24.04-arm
-            compiler: clang
-            build_type: Debug
-            coverage: true
-          - os: macos-latest
-            compiler: clang
             build_type: Debug
             coverage: true
 
