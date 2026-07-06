@@ -111,12 +111,12 @@ jobs:
         run: |
           lcov --capture -d build --output-file coverage.info \
             --branch-coverage \
-            --ignore-errors unused,version,empty
+            --ignore-errors unused,version,empty,inconsistent,mismatch
           lcov --remove coverage.info -o coverage.info \
             '/usr/*' '*/_deps/*' '*/tests/*' '*/benchmarks/*' \
             '*/googletest/*' '*/googlebenchmark/*' \
-            --ignore-errors unused,empty
-          lcov --list coverage.info --ignore-errors empty
+            --ignore-errors unused,empty,inconsistent,mismatch
+          lcov --list coverage.info --ignore-errors empty,inconsistent,mismatch
 
       - name: Upload coverage to Codecov
         if: matrix.coverage

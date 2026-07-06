@@ -21,9 +21,9 @@ For coverage:
 cmake -B build -DCMAKE_BUILD_TYPE=Debug -DZENRTS_BUILD_TESTS=ON -DZENRTS_BUILD_COVERAGE=ON -DZENRTS_STATIC_LINK=OFF
 cmake --build build -j$(nproc)
 ctest --test-dir build --output-on-failure
-lcov --capture -d build --output-file coverage.info --branch-coverage --ignore-errors unused,version,empty
-lcov --remove coverage.info -o coverage.info '/usr/*' '*/_deps/*' '*/tests/*' '*/benchmarks/*' '*/googletest/*' '*/googlebenchmark/*' --ignore-errors unused,empty
-lcov --list coverage.info --ignore-errors empty
+lcov --capture -d build --output-file coverage.info --branch-coverage --ignore-errors unused,version,empty,inconsistent,mismatch
+lcov --remove coverage.info -o coverage.info '/usr/*' '*/_deps/*' '*/tests/*' '*/benchmarks/*' '*/googletest/*' '*/googlebenchmark/*' --ignore-errors unused,empty,inconsistent,mismatch
+lcov --list coverage.info --ignore-errors empty,inconsistent,mismatch
 ```
 
 ## Code style

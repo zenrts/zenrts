@@ -21,4 +21,9 @@ add_executable(test_zenrts
 
 target_link_libraries(test_zenrts PRIVATE zenrts gtest_main)
 
+if(ZENRTS_BUILD_COVERAGE)
+    target_compile_options(test_zenrts PRIVATE --coverage -g -O0)
+    target_link_options(test_zenrts PRIVATE --coverage)
+endif()
+
 add_test(NAME test_zenrts COMMAND test_zenrts)
