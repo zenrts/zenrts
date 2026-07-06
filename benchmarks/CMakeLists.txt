@@ -18,3 +18,8 @@ add_executable(benchmark_zenrts
 )
 
 target_link_libraries(benchmark_zenrts PRIVATE zenrts benchmark::benchmark)
+
+if(ZENRTS_BUILD_COVERAGE)
+    target_compile_options(benchmark_zenrts PRIVATE --coverage -g -O0)
+    target_link_options(benchmark_zenrts PRIVATE --coverage)
+endif()
