@@ -209,10 +209,13 @@ TEST(DeadlineTimerTest, MultipleTimersFireInOrder)
 
     std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
-    ASSERT_EQ(order.size(), 3);
-    EXPECT_EQ(order[0], 1);
-    EXPECT_EQ(order[1], 2);
-    EXPECT_EQ(order[2], 3);
+    {
+        std::lock_guard lock(mtx);
+        ASSERT_EQ(order.size(), 3);
+        EXPECT_EQ(order[0], 1);
+        EXPECT_EQ(order[1], 2);
+        EXPECT_EQ(order[2], 3);
+    }
 
     ctx.stop();
 }
@@ -256,9 +259,12 @@ TEST(DeadlineTimerTest, TimerInsertAtHead)
 
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-    ASSERT_EQ(order.size(), 2);
-    EXPECT_EQ(order[0], 2);
-    EXPECT_EQ(order[1], 1);
+    {
+        std::lock_guard lock(mtx);
+        ASSERT_EQ(order.size(), 2);
+        EXPECT_EQ(order[0], 2);
+        EXPECT_EQ(order[1], 1);
+    }
 
     ctx.stop();
 }
@@ -310,9 +316,12 @@ TEST(DeadlineTimerTest, CancelMiddleTimer)
     middle.cancel();
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-    ASSERT_EQ(order.size(), 2);
-    EXPECT_EQ(order[0], 1);
-    EXPECT_EQ(order[1], 3);
+    {
+        std::lock_guard lock(mtx);
+        ASSERT_EQ(order.size(), 2);
+        EXPECT_EQ(order[0], 1);
+        EXPECT_EQ(order[1], 3);
+    }
 
     ctx.stop();
 }
@@ -467,10 +476,13 @@ TEST(DeadlineTimerTest, TimerInsertMiddle)
 
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-    ASSERT_EQ(order.size(), 3);
-    EXPECT_EQ(order[0], 1);
-    EXPECT_EQ(order[1], 2);
-    EXPECT_EQ(order[2], 3);
+    {
+        std::lock_guard lock(mtx);
+        ASSERT_EQ(order.size(), 3);
+        EXPECT_EQ(order[0], 1);
+        EXPECT_EQ(order[1], 2);
+        EXPECT_EQ(order[2], 3);
+    }
 
     ctx.stop();
 }
