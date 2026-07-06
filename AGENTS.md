@@ -4,6 +4,7 @@
 
 - All work is done on `feat/` or `fix/` branches. Never directly on `main`.
 - When the user says "Listo", they merge via GitHub PR. I must not merge locally.
+- After they say "Listo", I `git checkout main && git pull origin main` to sync.
 - Always ask before merging if there are doubts.
 
 ## Commands
