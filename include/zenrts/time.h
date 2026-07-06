@@ -33,17 +33,17 @@ public:
         return std::chrono::duration_cast<std::chrono::nanoseconds>(clock::now() - start_);
     }
 
-    auto nanos() const -> int64_t
+    auto nanoseconds() const -> int64_t
     {
         return elapsed().count();
     }
 
-    auto micros() const -> double
+    auto microseconds() const -> double
     {
         return std::chrono::duration<double, std::micro>(clock::now() - start_).count();
     }
 
-    auto millis() const -> double
+    auto milliseconds() const -> double
     {
         return std::chrono::duration<double, std::milli>(clock::now() - start_).count();
     }
@@ -70,7 +70,7 @@ public:
 
     ~scope_timer()
     {
-        auto ms = t_.millis();
+        auto ms = t_.milliseconds();
         os_ << name_ << ": " << ms << " ms" << std::endl;
     }
 

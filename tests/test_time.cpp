@@ -21,14 +21,14 @@ TEST(TimeTest, TimerMeasuresElapsed)
 {
     zenrts::timer t;
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    auto ms = t.millis();
+    auto ms = t.milliseconds();
     EXPECT_GE(ms, 5.0);
 }
 
-TEST(TimeTest, TimerNanos)
+TEST(TimeTest, TimerNanoseconds)
 {
     zenrts::timer t;
-    auto ns = t.nanos();
+    auto ns = t.nanoseconds();
     EXPECT_GE(ns, 0);
 }
 
@@ -36,9 +36,9 @@ TEST(TimeTest, TimerReset)
 {
     zenrts::timer t;
     std::this_thread::sleep_for(std::chrono::milliseconds(5));
-    auto before = t.millis();
+    auto before = t.milliseconds();
     t.reset();
-    auto after = t.millis();
+    auto after = t.milliseconds();
     EXPECT_GE(before, after);
 }
 
