@@ -3,7 +3,7 @@
 ## Workflow
 
 - All work is done on `feat/` or `fix/` branches. Never directly on `main`.
-- When the user says "Listo", merge to main: `git checkout main && git pull && git merge <branch> && git push origin main`
+- When the user says "Listo", they merge via GitHub PR. I must not merge locally.
 - Always ask before merging if there are doubts.
 
 ## Commands
