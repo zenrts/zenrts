@@ -2,9 +2,9 @@
 
 ## Workflow
 
-- Todo el trabajo se hace en ramas feat/ o fix/. Nunca directamente en main.
-- Cuando el usuario dice "Listo", se mergea a main: `git checkout main && git pull && git merge <rama> && git push origin main`
-- Siempre preguntar antes de mergear si hay dudas.
+- All work is done on `feat/` or `fix/` branches. Never directly on `main`.
+- When the user says "Listo", merge to main: `git checkout main && git pull && git merge <branch> && git push origin main`
+- Always ask before merging if there are doubts.
 
 ## Commands
 
@@ -15,7 +15,7 @@ ctest --test-dir build --output-on-failure
 cmake --build build --target benchmark_zenrts -j$(nproc) && ./build/benchmarks/benchmark_zenrts
 ```
 
-Para coverage:
+For coverage:
 ```bash
 cmake -B build -DCMAKE_BUILD_TYPE=Debug -DZENRTS_BUILD_TESTS=ON -DZENRTS_BUILD_COVERAGE=ON -DZENRTS_STATIC_LINK=OFF
 cmake --build build -j$(nproc)
@@ -27,31 +27,31 @@ lcov --list coverage.info --ignore-errors empty
 
 ## Code style
 
-- **C++20**, sin comentarios en el código (el código se explica solo).
-- `snake_case` para funciones y métodos, `PascalCase` para clases y tipos.
-- `PascalCase` para nombres de tests (GTest convention).
-- Usar `auto` donde el tipo sea obvio.
-- Preferir `std::string_view` sobre `const std::string&` en parámetros de solo lectura.
-- Preferir `[[nodiscard]]` donde tenga sentido.
-- No abreviar nombres: `milliseconds`, `nanoseconds`, `microseconds`, `seconds`, no `millis`, `nanos`, etc.
-- **Header-only** donde sea posible. Si hay un `.cpp`, mantenerlo mínimo.
-- Headers públicos en `include/zenrts/`. Incluir con `#include <zenrts/nombre.h>`.
-- El header principal `include/zenrts.h` incluye todos los módulos públicos.
-- Tests en `tests/test_<modulo>.cpp`.
-- Usar el namespace `zenrts`.
+- **C++20**, no comments in code (the code explains itself).
+- `snake_case` for functions and methods, `PascalCase` for classes and types.
+- `PascalCase` for test names (GTest convention).
+- Use `auto` where the type is obvious.
+- Prefer `std::string_view` over `const std::string&` for read-only parameters.
+- Prefer `[[nodiscard]]` where it makes sense.
+- No abbreviated names: `milliseconds`, `nanoseconds`, `microseconds`, `seconds`, not `millis`, `nanos`, etc.
+- **Header-only** where possible. If a `.cpp` is needed, keep it minimal.
+- Public headers in `include/zenrts/`. Include with `#include <zenrts/name.h>`.
+- The main header `include/zenrts.h` includes all public modules.
+- Tests in `tests/test_<module>.cpp`.
+- Use the `zenrts` namespace.
 
 ## Git
 
-- Commit messages en inglés, formato `tipo: mensaje corto`.
-  Ej: `feat: add time module with timer and scope_timer`
-  Ej: `refactor(time): use full names for duration methods`
-- No pushear a main. Solo a la rama de trabajo.
-- Al empezar una tarea: `git checkout -b feat/<nombre>`.
-- Al terminar: esperar instrucciones del usuario para mergear.
+- Commit messages in English, format `type: short message`.
+  Eg: `feat: add time module with timer and scope_timer`
+  Eg: `refactor(time): use full names for duration methods`
+- Do not push to main. Only to the working branch.
+- When starting a task: `git checkout -b feat/<name>`.
+- When done: wait for user instructions before merging.
 
-## Archivos nuevos
+## New files
 
-Todo archivo nuevo debe incluir el header AGPLv3 al inicio:
+Every new file must include the AGPLv3 header at the top:
 
 ```cpp
 // ZenRTS
@@ -72,5 +72,5 @@ Todo archivo nuevo debe incluir el header AGPLv3 al inicio:
 
 ## CI
 
-- El CI corre automáticamente en push/PR. No tocar los workflows sin autorización.
-- Release job solo se activa con tags v*. Ahí no corre build ni sanitizers.
+- CI runs automatically on push/PR. Do not touch workflows without authorization.
+- Release job only triggers on tags v*. Build and sanitizer jobs are skipped on tags.
