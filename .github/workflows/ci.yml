@@ -94,7 +94,7 @@ jobs:
         run: ctest --test-dir build --output-on-failure -C ${{ matrix.build_type }} --parallel -V
 
       - name: Benchmark (Unix)
-        if: runner.os != 'Windows' && !matrix.coverage
+        if: runner.os != 'Windows' && !matrix.coverage && matrix.build_type == 'Release'
         run: ./build/benchmarks/benchmark_zenrts
 
       - name: Install lcov

@@ -15,3 +15,7 @@
 
 ignore:
   - "**/main.cpp"
+  - "tests/*"
+  - "benchmarks/*"
+  - "_deps/**"
+  - "/usr/**"

@@ -25,5 +25,3 @@ static void BM_Version(benchmark::State& state)
     }
 }
 BENCHMARK(BM_Version);
-
-BENCHMARK_MAIN();

@@ -14,7 +14,10 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 add_executable(test_zenrts
+    test_context.cpp
     test_core.cpp
+    test_deadline_timer.cpp
+    test_strand.cpp
     test_time.cpp
     test_utils.cpp
 )
