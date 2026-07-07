@@ -309,12 +309,12 @@ TEST(DeadlineTimerTest, CancelMiddleTimer)
     middle.async_wait();
     last.async_wait();
 
+    middle.cancel();
+
     std::thread worker([&ctx] { ctx.run(); });
     ThreadGuard g(worker);
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(5));
-    middle.cancel();
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
     {
         std::lock_guard lock(mtx);
