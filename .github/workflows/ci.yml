@@ -95,7 +95,7 @@ jobs:
 
       - name: Benchmark (Unix)
         if: runner.os != 'Windows' && !matrix.coverage && matrix.build_type == 'Release'
-        run: ./build/benchmarks/benchmark_zenrts --benchmark_filter="BM_PostThroughput|BM_TaskLatency|BM_Timer|BM_Cancel|BM_Version" --benchmark_min_time=0.1s
+        run: ./build/benchmarks/benchmark_zenrts
 
       - name: Install lcov
         if: matrix.coverage
