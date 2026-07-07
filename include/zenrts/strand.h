@@ -48,19 +48,18 @@ public:
     void post(StrandTaskBase& task, Priority prio = Priority::normal)
     {
         task.prio = prio;
-        task.next_ = nullptr;
 
         std::lock_guard lock(mtx_);
-        auto was_empty = (head_ == nullptr);
-        if (was_empty) {
-            head_ = &task;
+        if (executing_) {
+            task.next_ = nullptr;
+            if (tail_) {
+                tail_->next_ = &task;
+            } else {
+                head_ = &task;
+            }
             tail_ = &task;
         } else {
-            tail_->next_ = &task;
-            tail_ = &task;
-        }
-
-        if (was_empty) {
+            executing_ = true;
             ctx_.post(task, prio);
         }
     }
@@ -68,16 +67,18 @@ public:
 private:
     friend class StrandTaskBase;
 
-    void dispatch_next()
+    void on_task_done()
     {
-        TaskBase* next = nullptr;
+        StrandTaskBase* next = nullptr;
         {
             std::lock_guard lock(mtx_);
             if (head_) {
-                // head_ is the task that just finished, advance to next
-                head_ = static_cast<StrandTaskBase*>(head_->next_);
-                if (!head_) tail_ = nullptr;
                 next = head_;
+                head_ = head_->next_;
+                if (!head_) tail_ = nullptr;
+                next->next_ = nullptr;
+            } else {
+                executing_ = false;
             }
         }
         if (next) {
@@ -86,6 +87,7 @@ private:
     }
 
     Context& ctx_;
+    bool executing_ = false;
     StrandTaskBase* head_ = nullptr;
     StrandTaskBase* tail_ = nullptr;
     mutable std::mutex mtx_;
@@ -95,7 +97,7 @@ inline void StrandTaskBase::execute()
 {
     on_execute();
     if (strand_) {
-        strand_->dispatch_next();
+        strand_->on_task_done();
     }
 }
 
