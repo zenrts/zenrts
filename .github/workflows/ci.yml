@@ -95,6 +95,7 @@ jobs:
 
       - name: Benchmark (Unix)
         if: runner.os != 'Windows' && !matrix.coverage && matrix.build_type == 'Release'
+        timeout-minutes: 10
         run: ./build/benchmarks/benchmark_zenrts
 
       - name: Install lcov
