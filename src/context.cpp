@@ -213,7 +213,7 @@ void Context::run()
             if (impl_->work_count_ > 0 || impl_->timer_head_) {
                 auto next = impl_->timer_head_
                     ? impl_->timer_head_->expiry_
-                    : std::chrono::steady_clock::now() + std::chrono::milliseconds(1);
+                    : std::chrono::steady_clock::now() + std::chrono::milliseconds(100);
                 impl_->cv_.wait_until(lock, next, [this] {
                     return impl_->has_work()
                         || impl_->stopped_.load(std::memory_order_acquire)
